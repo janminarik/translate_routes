@@ -151,10 +151,10 @@ class TranslateRoutesTest < ActionController::TestCase
   def test_formatted_root_route
     @routes.draw{ root :to => 'people#index', :as => 'root' }
     @route_translator.yield_dictionary { |t| t['en'] = {}; t['es'] = {'people' => 'gente'} }
-    assert_equal '/(.:format)', path_string(named_route('root'))
+    assert_equal '/', path_string(named_route('root'))
     translate_routes
-    assert_equal '/(.:format)', path_string(named_route('root_en'))
-    assert_equal '/es(.:format)', path_string(named_route('root_es'))
+    assert_equal '/', path_string(named_route('root_en'))
+    assert_equal '/es', path_string(named_route('root_es'))
   end
   
   def test_routes_translations_are_always_downcased
@@ -238,9 +238,11 @@ class TranslateRoutesTest < ActionController::TestCase
 
   # Given a route defined as a string like this:
   # 'ANY    /es(.:format)                            {:controller=>"people", :action=>"index"}'
+  # or
+  # '    /es(.:format)                            {:controller=>"people", :action=>"index"}'
   # returns "/es(.:format)"
   def path_string(route)
-    route.to_s.split(' ')[1]
+    "x#{route}".to_s.split(' ')[1]
   end
 
   def named_route(name)
